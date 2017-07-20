@@ -1,0 +1,42 @@
+---
+title: "The importance of measurement uncertainty in ecological management"
+subtitle: ""
+author: "Carl Boettiger"
+date: "2017/08/09"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+<!--
+background-size: contain;      /* applied using JavaScript only if background-image is larger than slide */
+-->
+
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+> "The real goal of fisheries management is to avoid finding out what the stock-recruitment relationship is. Once you have depleted the stock enough to know, it’s probably too late""
+
+-John Shepard, from an argument with David Cushing, ca 1980
+
+---
+
+# How do we manage what we cannot measure?
+
+---
+
+# Classic MSY
+
+
+
