@@ -38,5 +38,56 @@ class: center, bottom, inverse
 
 # Classic MSY
 
+![](img/msy.jpg)
 
+$$\frac{dN}{dt} = \underbrace{r N \left(1 - \frac{N}{K} \right)}_{f(N)} - H$$
+$$H_{\text{MSY}} = f(N) = r K / 4$$
+$$B_{\text{MSY}} = K/2 $$
+
+
+---
+
+# Stochastic Models (Reed 1979)
+
+$$ N_{t+1} = z_t^g f(N_t - H_t)$$
+
+
+"Constant Escapement"
+
+$$S = B_{\text{MSY}}$$
+
+
+---
+
+# An aside: Age structure
+
+- Larval only density dependence -> MSY solution, harvest only on most valuable age class (Reed 1980, Getz 1980)
+- Age+stage structured may not be an MSY (cyclical escapement, still an average $B_{\text{MSY}}$)
+- Stochastic age-structured models: also support either larger or smaller harvest than the deterministic equivalent, but   still at a constant escapement policy
+
+---
+
+# Decisions vs Models
+
+
+---
+
+# The puzzle begins
+
+
+---
+
+# Clark 1987
+
+---
+
+# Roughgarden 1996
+
+---
+
+# Sethi 2005
+
+---
+
+# An uncertainty paradox?
 
