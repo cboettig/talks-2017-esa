@@ -26,9 +26,9 @@ background-position: center
 background-size: 180%
 class: center, bottom, inverse
 
-> "The real goal of fisheries management is to avoid finding out what the stock-recruitment relationship is. Once you have depleted the stock enough to know, it’s probably too late""
+> The real goal of fisheries management is to avoid finding out what the stock-recruitment relationship is. Once you have depleted the stock enough to know, it’s probably too late
 
--John Shepard, from an argument with David Cushing, ca 1980
+--John Shepard, from an argument with David Cushing, ca 1980
 
 ---
 
@@ -77,17 +77,66 @@ $$S = B_{\text{MSY}}$$
 
 ---
 
-# Clark 1987
+background-image: url(img/noaa_tuna.jpg)
+background-position: center
+background-size: 100%
+class: center, bottom, inverse
+
+![](img/Clark_alpha_invert.png)
+
+> The above results appear to contradict the conventional wisdom of renewable resource management, under which high uncertainty would call for increased
+caution in the setting of quotas.
+
+-- Clark & Kirkwood 1987
+
+
 
 ---
+
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
 
 # Roughgarden 1996
 
 ---
 
-# Sethi 2005
+
+background-image: url(img/noaa_reef.jpg)
+background-position: bottom right
+background-size: 150%
+class: center, bottom, inverse
+
+
+![](img/Sethi_alpha_invert.png)
+
+> It may seem counter-intuitive that a measurement error causes lower expected escapements
+below the deterministic fishery closure threshold. 
+
+-- Sethi et al (2005)
 
 ---
 
 # An uncertainty paradox?
 
+---
+
+# Acknowledgements 
+
+.pull-left[
+![Milad Memarzadeh](img/milad.png)
+
+Milad Memarzadeh
+
+![UC Berkeley; ESPM Dept](img/berkeley.png)
+
+ESPM Dept (startup)
+]
+
+.pull-right[
+![Image credits: NOAA](img/noaa.png)
+
+Image credits
+]
