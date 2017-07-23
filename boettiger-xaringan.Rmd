@@ -12,13 +12,28 @@ output:
       countIncrementalSlides: false
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE}
 options(htmltools.dir.version = FALSE)
-```
+knitr::opts_chunk$set(dev.args=list(bg="transparent"))
 
-<!--
-background-size: contain;      /* applied using JavaScript only if background-image is larger than slide */
--->
+library(tidyverse)
+
+theme_set(
+ theme_bw(base_size=26) + 
+  theme(line = element_line(colour = "white", size = 1.5),
+    rect = element_rect(fill = "transparent", colour = "white"),
+    text = element_text(colour = "white"),
+  axis.text = element_text(colour = "white"),
+  axis.ticks = element_line(colour = "white", size = 1.5),
+  panel.border = element_rect(colour = "white", size = 1.5),
+  panel.background = element_rect(fill = "transparent"),
+  plot.background = element_blank(), 
+  legend.background = element_blank(), 
+  legend.key = element_blank(), 
+  strip.background = element_blank(),  
+  panel.grid = element_blank()))
+  
+```
 
 
 background-image: url(img/noaa_fisheries.jpg)
@@ -36,9 +51,28 @@ class: center, bottom, inverse
 
 ---
 
-# Classic MSY
+background-image: url(img/noaa_tuna2.jpg)
+background-position: center
+background-size: 100%
+class: center, top, inverse
 
-![](img/msy.jpg)
+```{r echo=FALSE, fig.width=8, fig.height=5}
+r <- 1
+K <- 100
+H <- 0
+logistic <- function(N) r * N * (1 - N / K) - H
+
+data_frame(population_size = 0:100, 
+           growth_rate = logistic(population_size)) %>%
+  ggplot(aes(population_size, growth_rate)) + 
+  geom_path(col="white", size=2) +
+  geom_vline(aes(xintercept = K/2), lty = "dashed", col = "white", size = 1.5)
+ 
+```
+
+<!--two dashes treats prev slide as template; e.g. acts as hide/ sequential reveal mechanism -->
+
+--
 
 $$\frac{dN}{dt} = \underbrace{r N \left(1 - \frac{N}{K} \right)}_{f(N)} - H$$
 $$H_{\text{MSY}} = f(N) = r K / 4$$
@@ -72,7 +106,7 @@ $$S = B_{\text{MSY}}$$
 
 ---
 
-# The puzzle begins
+# A Paradox?
 
 
 ---
@@ -91,15 +125,7 @@ caution in the setting of quotas.
 
 
 
----
 
-
-background-image: url(img/noaa_tuna_net.jpg)
-background-position: center
-background-size: 120%
-class: center, bottom, inverse
-
-# Roughgarden 1996
 
 ---
 
@@ -120,6 +146,37 @@ below the deterministic fishery closure threshold.
 ---
 
 # An uncertainty paradox?
+
+---
+
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+## A Hard Problem
+
+> For reasons of tractability, we shall adopt the simplifying assumption that the escapement level S, is known exactly at the end of that period. (The mathematical difficulty
+of the problem increases markedly if this assumption is
+relaxed.)
+
+-- Clark & Kirkwood 1987
+
+---
+
+background-image: url(img/self-driving-car.jpg)
+class: center, inverse
+
+# A Solution?
+
+.pull-left.left[
+.footnote[
+CC-BY - flickr:jurvetson
+]]
+
+
+
 
 ---
 
