@@ -49,12 +49,19 @@ class: center, bottom, inverse
 
 # How do we manage what we cannot measure?
 
+
+---
+
+# Uncertainty in Models but not Decisions
+
 ---
 
 background-image: url(img/noaa_tuna2.jpg)
 background-position: center
 background-size: 100%
 class: center, top, inverse
+
+# MSY: a sticky idea
 
 ```{r echo=FALSE, fig.width=8, fig.height=5}
 r <- 1
@@ -106,7 +113,9 @@ $$S = B_{\text{MSY}}$$
 
 ---
 
-# A Paradox?
+# How should we accomodate observational uncertainty?
+
+## A long-standing paradox?
 
 
 ---
@@ -147,6 +156,9 @@ below the deterministic fishery closure threshold.
 
 # An uncertainty paradox?
 
+
+## _More Uncertainty = LESS Precautionary?_
+
 ---
 
 
@@ -155,13 +167,22 @@ background-position: center
 background-size: 120%
 class: center, bottom, inverse
 
-## A Hard Problem
+## A Tough Problem
 
 > For reasons of tractability, we shall adopt the simplifying assumption that the escapement level S, is known exactly at the end of that period. (The mathematical difficulty
 of the problem increases markedly if this assumption is
 relaxed.)
 
 -- Clark & Kirkwood 1987
+
+---
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# A Non-Markovian Process!
 
 ---
 
@@ -175,8 +196,33 @@ class: center, inverse
 CC-BY - flickr:jurvetson
 ]]
 
+---
 
+# POMDPs: Tracking the Belief State
 
+---
+
+# (Prior) Beliefs matter
+
+-- 
+
+## the "paradox" applies only to amnesiac manager
+
+--
+
+or a manager with strong prior belief that the stock is larger than the most recent observation would suggest.
+
+---
+
+# There is no "policy"
+
+--
+
+Must also know your prior belief
+
+--
+
+or rather, must know prior _complete history_ of observations 
 
 ---
 
