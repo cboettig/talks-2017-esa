@@ -5,6 +5,8 @@ author: "Carl Boettiger"
 date: "2017/08/09"
 output:
   xaringan::moon_reader:
+    css: ["default", "print.css"]
+    chakra: libs/remark-latest.min.js
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -14,25 +16,27 @@ output:
 
 ```{r setup, include=FALSE, message=FALSE}
 options(htmltools.dir.version = FALSE)
-knitr::opts_chunk$set(dev.args=list(bg="transparent"))
+knitr::opts_chunk$set(dev.args=list(bg="transparent"), 
+                      echo = FALSE, message=FALSE, warning=FALSE)
 
 library(tidyverse)
 
 theme_set(
  theme_bw(base_size=26) + 
   theme(line = element_line(colour = "white", size = 1.5),
-    rect = element_rect(fill = "transparent", colour = "white"),
-    text = element_text(colour = "white"),
-  axis.text = element_text(colour = "white"),
-  axis.ticks = element_line(colour = "white", size = 1.5),
-  panel.border = element_rect(colour = "white", size = 1.5),
-  panel.background = element_rect(fill = "transparent"),
-  plot.background = element_blank(), 
-  legend.background = element_blank(), 
-  legend.key = element_blank(), 
-  strip.background = element_blank(),  
-  panel.grid = element_blank()))
-  
+        rect = element_rect(fill = "transparent", colour = "white"),
+        text = element_text(colour = "white"),
+        axis.text = element_text(colour = "white"),
+        axis.ticks = element_line(colour = "white", size = 1.5),
+        panel.border = element_rect(colour = "white", size = 1.5),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_blank(), 
+        legend.background = element_blank(), 
+        legend.key = element_rect(fill = "transparent", colour = "transparent"), 
+        strip.background = element_blank(),
+        strip.text = element_text(colour = "white"),
+        panel.grid = element_blank()))
+        
 ```
 
 
@@ -52,18 +56,23 @@ class: center, bottom, inverse
 
 ---
 
-# Uncertainty in Models but not Decisions
+# We include uncertainties in our *models* but not *decisions*
 
 ---
 
-background-image: url(img/noaa_tuna2.jpg)
+# Stock assessment & uncertainty
+
+
+---
+
+background-image: url(img/noaa_fish.jpg)
 background-position: center
 background-size: 100%
 class: center, top, inverse
 
 # MSY: a sticky idea
 
-```{r echo=FALSE, fig.width=8, fig.height=5}
+```{r echo=FALSE, fig.width=8, fig.height=4.5}
 r <- 1
 K <- 100
 H <- 0
@@ -82,9 +91,7 @@ data_frame(population_size = 0:100,
 --
 
 $$\frac{dN}{dt} = \underbrace{r N \left(1 - \frac{N}{K} \right)}_{f(N)} - H$$
-$$H_{\text{MSY}} = f(N) = r K / 4$$
-$$B_{\text{MSY}} = K/2 $$
-
+$$H_{\text{MSY}} = f(N) = r K / 4, \phantom S B_{\text{MSY}} = K/2$$
 
 ---
 
@@ -96,15 +103,15 @@ $$ N_{t+1} = z_t^g f(N_t - H_t)$$
 "Constant Escapement"
 
 $$S = B_{\text{MSY}}$$
+---
 
+# Solving Sequential Decision problems: Dynamic Programming 
 
 ---
 
-# An aside: Age structure
+# Reed's legacy: a most important result you can safely ignore
 
-- Larval only density dependence -> MSY solution, harvest only on most valuable age class (Reed 1980, Getz 1980)
-- Age+stage structured may not be an MSY (cyclical escapement, still an average $B_{\text{MSY}}$)
-- Stochastic age-structured models: also support either larger or smaller harvest than the deterministic equivalent, but   still at a constant escapement policy
+
 
 ---
 
@@ -113,54 +120,17 @@ $$S = B_{\text{MSY}}$$
 
 ---
 
-# How should we accomodate observational uncertainty?
-
-## A long-standing paradox?
-
-
----
-
 background-image: url(img/noaa_tuna.jpg)
 background-position: center
-background-size: 100%
+background-size: 120%
 class: center, bottom, inverse
 
-![](img/Clark_alpha_invert.png)
+## A long-standing paradox
 
-> The above results appear to contradict the conventional wisdom of renewable resource management, under which high uncertainty would call for increased
-caution in the setting of quotas.
-
--- Clark & Kirkwood 1987
-
-
-
-
+> An important tacit assumption in Reed’s analysis, as in the other works referred
+to above, is that the recruitment level X is known accurately prior to the harvest decision, [...] In the case of fishery resources, the stock level X is almost never known very accurately, owing to the difficulty of observing fish in their natural environment.
 
 ---
-
-
-background-image: url(img/noaa_reef.jpg)
-background-position: bottom right
-background-size: 150%
-class: center, bottom, inverse
-
-
-![](img/Sethi_alpha_invert.png)
-
-> It may seem counter-intuitive that a measurement error causes lower expected escapements
-below the deterministic fishery closure threshold. 
-
--- Sethi et al (2005)
-
----
-
-# An uncertainty paradox?
-
-
-## _More Uncertainty = LESS Precautionary?_
-
----
-
 
 background-image: url(img/noaa_tuna_net.jpg)
 background-position: center
@@ -177,12 +147,47 @@ relaxed.)
 
 ---
 
-background-image: url(img/noaa_tuna_net.jpg)
+background-image: url(img/noaa_tuna.jpg)
 background-position: center
 background-size: 120%
 class: center, bottom, inverse
 
-# A Non-Markovian Process!
+![](img/Clark_alpha_invert.png)
+
+> The above results appear to contradict the conventional wisdom of renewable resource management, under which high uncertainty would call for increased
+caution in the setting of quotas.
+
+-- Clark & Kirkwood 1986
+
+
+
+
+
+---
+
+
+background-image: url(img/noaa_reef.jpg)
+background-position: bottom left
+background-size: 150%
+class: center, bottom, inverse
+
+
+![](img/Sethi_alpha_invert.png)
+
+> It may seem counter-intuitive that a measurement error causes lower expected escapements
+below the deterministic fishery closure threshold. 
+
+-- Sethi et al (2005)
+
+---
+
+class: center, middle
+
+# The uncertainty paradox:
+
+
+## _More_   uncertainty $\phantom = = \phantom =$ _Less_   precautionary?
+
 
 ---
 
@@ -200,21 +205,207 @@ CC-BY - flickr:jurvetson
 
 # POMDPs: Tracking the Belief State
 
----
+- Transition Matrix
 
-# (Prior) Beliefs matter
+--
+- Observation Matrix
 
--- 
+--
+- Utility Matrix
 
-## the "paradox" applies only to amnesiac manager
+--
+- discount factor
+
+--
+- *prior belief*
 
 --
 
-or a manager with strong prior belief that the stock is larger than the most recent observation would suggest.
+R package: <https://github.com/boettiger-lab/sarsop>
+
 
 ---
 
-# There is no "policy"
+background-image: url(img/jetstream-cpus.jpg)
+background-position: center
+background-size: 100%
+class: center, bottom, inverse
+
+# XSEDE Jetstream Cloud
+
+HPC for the rest of us
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+```{r fig.width=11, fig.height=6.5}
+plot_policies <- function(df){
+  ggplot(df, aes(x = states, y = escapement, lty = method)) + 
+    geom_line(lwd = 2, col="white") +
+    coord_cartesian(xlim = c(0,1), ylim = c(0,0.8)) +
+    ylab(bquote(paste("Escapement, ", B[MSY]))) + 
+    xlab("Observed stock")
+}
+read_csv("policies.csv") -> df 
+
+df %>%
+  filter(method %in% c("det")) %>%
+  plot_policies()
+```
+
+## Deterministic Solution
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+```{r fig.width=11, fig.height=6.5}
+df %>%
+  filter(method %in% c("det", "pgy")) %>%
+  plot_policies()
+```
+
+## Pretty Good Yield
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+```{r fig.width=11, fig.height=6.5}
+df %>%
+  filter(method %in% c("det", "medium")) %>%
+  plot_policies()
+```
+
+## Common sense prevails!
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+```{r fig.width=11, fig.height=6.5}
+df %>%
+  filter(method %in% c("det", "medium")) %>%
+  plot_policies()
+```
+
+## (Prior) beliefs matter
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+```{r fig.width=11, fig.height=6.5}
+df %>%
+  filter(method %in% c("det", "low")) %>%
+  plot_policies()
+```
+
+## (Prior) beliefs matter
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+```{r fig.width=11, fig.height=6.5}
+df %>%
+  filter(method %in% c("det", "high")) %>%
+  plot_policies()
+```
+
+## (Prior) beliefs matter
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+```{r fig.width=12, fig.height=9}
+  df %>% 
+    filter(method %in% c("low", "medium", "high", "det")) %>% 
+    mutate(prior = prior*3) %>%
+    select(states, escapement, method, prior) %>%
+    gather(panel, variable, -states, -method) %>%
+    ggplot() + 
+    geom_line(aes(x = states, y = variable, lty = method), lwd = 2, col="white") +
+    facet_wrap(~panel, ncol=1) +
+    coord_cartesian(xlim = c(0,1), ylim = c(0,0.8)) +
+    xlab("Observed stock") + ylab("Escapement")
+```
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+```{r fig.width=11, fig.height=6.5}
+df %>%
+  filter(method %in% c("det", "uniform")) %>%
+  plot_policies()
+```
+
+## Paradoxical earlier results effectively ignored prior information
+
+---
+
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+```{r fig.width=11, fig.height=6.5}
+df %>%
+  filter(method %in% c("det", "low", "pgy")) %>%
+  plot_policies()
+```
+
+## "Pretty Good Yield" isn't always more conservative
+
+
+---
+
+# Simulation
+
+
+---
+
+# There is no fixed "policy"
 
 --
 
@@ -222,7 +413,7 @@ Must also know your prior belief
 
 --
 
-or rather, must know prior _complete history_ of observations 
+in other words, must know prior _complete history_ of observations 
 
 ---
 
@@ -242,4 +433,27 @@ ESPM Dept (startup)
 ![Image credits: NOAA](img/noaa.png)
 
 Image credits
+
+
+![Jetstream](img/jetstream.png)
+
+Cloud Computing
+
 ]
+
+---
+
+# Appendix: Age structure
+
+--
+
+- Larval only density dependence -> MSY solution, harvest only on most valuable age class (Reed 1980, Getz 1980)
+
+-- 
+
+- Age+stage structured may not be an MSY (cyclical escapement, still an average $B_{\text{MSY}}$)
+
+--
+
+- Stochastic age-structured models: also support either larger or smaller harvest than the deterministic equivalent, but still at a constant escapement policy
+

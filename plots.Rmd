@@ -1,0 +1,296 @@
+---
+title: "POMDP"
+author: "Carl Boettiger"
+date: "`r Sys.Date()`"
+output: github_document
+---
+
+```{r message=FALSE}
+library(sarsop)
+library(tidyverse) # for plotting
+library(ggthemes)
+theme_set(theme_tufte())
+```
+
+
+```{r}
+states <- seq(0,2, length=60)
+actions <- states
+observations <- states
+sigma_g <- 0.1
+sigma_m <- 0.2
+reward_fn <- function(x,h) pmin(x,h) # - .001*h
+discount <- 0.95
+
+r <- 0.75
+K <- 0.75
+
+f <- function(x, h){ # ricker
+  s <- pmax(x - h, 0)
+  s * exp(r * (1 - s / K) )
+}
+```
+
+
+## Semi-analytic solution to Deterministic problem
+
+Note that `S_star`, $S^*$, is more frequently known as $B_{MSY}$.  
+
+```{r}
+S_star <- optimize(function(x) -f(x,0) + x / discount, 
+                   c(min(states), max(states)))$minimum
+det_policy <- sapply(states, function(x) pmax(x - S_star,0))
+det_action <- sapply(det_policy, function(x) which.min(abs(actions - x)))
+```
+
+
+MSY is the harvest that maintains $B_{MSY}$
+
+
+
+"Pretty Good Yield," PGY, considering a fixed percent (commonly taken at 80%) smaller harvest relative to the determinstic harvest.  
+
+Since this is a fixed harvest policy, the *harvest* is independent of the measurement, but consequently the resulting (expected, given the measurement) escapement is not.
+
+Note that reducing the deterministic harvest by a fixed fraction does not create a constant-escapement policy, since an increase in the population size by $\Delta$ does not recieve a corresponding increase in harvest by $\Delta$, but only $0.8 \cdot \Delta$.  
+
+
+```{r}
+pgy_action <- sapply(det_policy, 
+                     function(x) which.min(abs(actions - 0.8 * x)))
+
+MSY <- f(S_star,0) - S_star
+msy_index <- which.min(abs(actions - MSY))
+msy_action <- rep(msy_index, length(actions))
+
+PGY <- 0.8 * MSY
+pgy_index <- which.min(abs(actions - 0.8 * PGY))
+pgy_action <- rep(pgy_index, length(actions))
+```
+
+
+## Discretize as transition, observation, and reward matrices for MDP & POMDP calculations
+
+
+```{r}
+m <- fisheries_matrices(states, actions, observations, reward_fn, 
+                        f, sigma_g, sigma_m, noise = "lognormal")
+```
+
+## POMDP Solution
+
+```{r eval=FALSE}
+#log_data <- data.frame(id = "plots", model = "ricker", 
+#                       r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
+
+#system.time({
+#alpha <- sarsop(m$transition, m$observation, m$reward, discount, 
+#                log_data = log_data, log_dir = ".",
+#                precision = .05, timeout = 2000)
+#})
+```
+
+
+```{r}
+log_dir <- "."
+meta <- meta_from_log(data.frame(id = "plots"), log_dir)
+alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]
+```
+
+
+Given the model matrices and `alpha` vectors.  Start belief with a uniform prior over states, compute & plot policy:
+
+```{r}
+unif_prior = rep(1, length(states)) / length(states) # initial belief
+unif <- compute_policy(alpha, m$transition, m$observation, m$reward,  unif_prior)
+
+```
+
+```{r}
+i_star <- which.min(abs(states - S_star))
+ i_low <- which.min(abs(states - 0.5 * S_star))
+ i_high <- which.min(abs(states - 1.5 * S_star))
+#i_low <- 2
+#i_high <- which.min(abs(states - K))
+
+prior_star <- m$observation[,i_star,1]
+prior_low <- m$observation[,i_low,1]
+prior_high <- m$observation[,i_high,1] 
+
+
+star <- compute_policy(alpha, m$transition, m$observation, m$reward,  prior_star)
+low <- compute_policy(alpha, m$transition, m$observation, m$reward,  prior_low)
+high <- compute_policy(alpha, m$transition, m$observation, m$reward,  prior_high)
+
+```
+
+```{r}
+df <- unif
+df$det <- det_action
+df$pgy <- pgy_action
+df$medium <- star$policy
+df$low <- low$policy
+df$high <- high$policy
+df$msy <- msy_action
+
+df %>% 
+  select(-value) %>% 
+  rename(uniform = policy) %>% 
+  gather(method, policy, -state) %>%
+  mutate(states = states[state], 
+         escapement = states[state] - actions[policy],
+         harvest = actions[policy]) %>%
+  select(states, method, escapement, harvest) -> df
+
+
+df <- data_frame(states, 
+           low = prior_low, 
+           medium = prior_star, 
+           high = prior_high, 
+           uniform = unif_prior) %>%
+  gather(method, prior, -states) %>%
+  full_join(df)
+
+write_csv(df, "policies.csv")
+
+
+```
+
+
+
+```{r}
+plot_policies <- function(df){
+  ggplot(df, aes(x = states, y = escapement, lty = method)) + 
+    geom_line(lwd = 1) +
+    coord_cartesian(xlim = c(0,1), ylim = c(0,0.8)) +
+    xlab("Observed stock")
+}
+
+df %>% 
+  filter(method %in% c("det", "pgy")) %>%
+  plot_policies()
+```
+
+
+```{r message=FALSE, warning=FALSE}
+  df %>% 
+    filter(method %in% c("low", "medium", "high", "det")) %>% 
+    mutate(prior = prior*3) %>%
+    select(states, escapement, method, prior) %>%
+    gather(panel, variable, -states, -method) %>%
+    ggplot() + 
+    geom_line(aes(x = states, y = variable, lty = method), lwd = 1) +
+    facet_wrap(~panel, ncol=1) +
+    coord_cartesian(xlim = c(0,1), ylim = c(0,0.8)) +
+    xlab("Observed stock") 
+
+```
+
+
+
+```{r}
+df %>% 
+  filter(method %in% c("det", "medium", "uniform")) %>%
+  plot_policies()
+
+```
+
+
+
+
+
+```{r}
+## make det line faint
+df %>% 
+  filter(method %in% c("det")) %>%
+  ggplot(aes(x = states, y = escapement, lty = method)) + 
+  geom_line(lwd=1, alpha = 0.25) +
+  coord_cartesian(xlim = c(0,1), ylim=c(0,0.8)) +
+  ylab("Escapement, B_{MSY}") + 
+  xlab("Observed stock") -> det_plot
+
+det_plot + 
+  geom_line(alpha=1, lwd = 1, data =
+  filter(df, method %in% c("low", "pgy")) )
+  
+```
+
+```{r}
+df %>%
+  filter(method %in% c("low", "high")) %>%
+  spread(method, escapement) -> band
+
+df %>% 
+  filter(method %in% c("det", "pgy", "medium")) %>% 
+  mutate(method = recode(method, medium = "pomdp")) %>%
+  #mutate(method = forcats::fct_recode(method, "pomdp" = "medium")) %>% # WHY BACKWARDS?
+  ggplot() + 
+  geom_line(aes(x = states, y = escapement, lty = method), lwd=1) +
+  coord_cartesian(xlim = c(0,1), ylim=c(0,0.8)) +
+  ylab(expression(B[MSY])) + 
+  xlab("Observed stock") +
+  geom_ribbon(aes(x = states, ymin = low, ymax = high), 
+              data = band, alpha = 0.3)
+  
+```  
+
+
+
+
+
+
+
+
+Simulate management under the POMDP policy:
+
+```{r}
+x0 <- which.min(abs(states - K))
+Tmax <- 200
+sim <- sim_pomdp(m$transition, m$observation, m$reward, discount, 
+state_prior, x0 = x0, Tmax = Tmax, alpha = alpha)
+```
+
+Plot simulation data:
+
+```{r}
+sim$df %>%
+select(-value) %>%
+mutate(state = states[state], action = actions[action], obs = observations[obs]) %>%
+gather(variable, stock, -time) %>%
+ggplot(aes(time, stock, color = variable)) + geom_line()  + geom_point()
+```
+
+
+
+
+Simulate management under an MDP policy:
+
+```{r}
+library(mdplearning)
+x0 <- which.min(abs(states - K))
+Tmax <- 200
+sim <- mdp(m$transition, m$observation, m$reward, discount, 
+state_prior, x0 = x0, Tmax = Tmax, alpha = alpha)
+```
+
+Plot simulation data:
+
+```{r}
+sim$df %>%
+select(-value) %>%
+mutate(state = states[state], action = actions[action], obs = observations[obs]) %>%
+gather(variable, stock, -time) %>%
+ggplot(aes(time, stock, color = variable)) + geom_line()  + geom_point()
+```
+
+Plot belief evolution:
+
+```{r}
+sim$state_posterior %>% 
+data.frame(time = 1:Tmax) %>%
+filter(time %in% seq(1,Tmax, by = 2)) %>%
+gather(state, probability, -time, factor_key =TRUE) %>% 
+mutate(state = as.numeric(state)) %>% 
+ggplot(aes(state, probability, group = time, alpha = time)) + geom_line()
+```
+

@@ -1,0 +1,2 @@
+id,load_time_sec,init_time_sec,run_time_sec,final_precision,end_condition,n_states,n_obs,n_actions,discount,date,model,r,K,sigma_g,sigma_m
+plots,0.97,38.93,4004.59,0.0219388,  Preset timeout reached,60,60,60,0.95,2017-08-08 15:21:07,ricker,0.75,0.75,0.1,0.2
