@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The importance of measurement uncertainty in ecological management</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Carl Boettiger" />
+    <link href="libs/remark-css/example.css" rel="stylesheet" />
+    <link rel="stylesheet" href="print.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# The importance of measurement uncertainty in ecological management
+### Carl Boettiger
+### 2017/08/09
+
+---
+
+
+
+
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+&gt; Managing fisheries is hard: it’s like managing a forest, in which the trees are invisible and keep moving around
+
+--John Shepard, from unpublished lecture at Princeton University, ca 1978
+
+&lt;!--
+
+&gt; The real goal of fisheries management is to avoid finding out what the stock-recruitment relationship is. Once you have depleted the stock enough to know, it’s probably too late
+
+--John Shepard, from an argument with David Cushing, ca 1980
+
+--&gt;
+
+---
+
+background-image: url(img/noaa_sunset.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# We've gotten much better at including uncertainties in our models
+
+---
+
+background-image: url(img/noaa_sunset.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# It is time to include uncertainties in our decisions
+
+---
+
+background-image: url(img/noaa_sunset.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# Decision Theory
+
+--
+
+### Fischer et al (2009): _Integrating resilience thinking and optimisation for conservation._
+
+### Polasky et al (2011): _Decision-making under great uncertainty: environmental management in an era of global change._
+
+
+---
+background-image: url(img/bw.png)
+background-position: center
+background-size: 100%
+class: center
+
+.pull-left[
+
+# Optimal Control 
+
+]
+
+.pull-right[
+# &lt;span style="color: white"&gt;Resilience Thinking&lt;/span&gt;
+]
+
+---
+background-image: url(img/noaa_school.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# Uncertainty about the Furture 
+
+&lt;!--
+### Ecological Forecasting--&gt;
+
+---
+background-image: url(img/noaa_school.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+
+# Uncertainty about the Present
+
+&lt;!--
+## Unknown Unknowns?
+## Unknown Knowns
+--&gt;
+
+---
+
+background-image: url(img/noaa_trawler.jpg)
+background-position: center
+background-size: 100%
+class: center, bottom, inverse
+
+# Stock assessment uncertainty
+
+
+---
+
+background-image: url(img/noaa_fish.jpg)
+background-position: center
+background-size: 100%
+class: center, top, inverse
+
+# MSY: a sticky idea
+
+![](index_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
+&lt;!--two dashes treats prev slide as template; e.g. acts as hide/ sequential reveal mechanism --&gt;
+
+--
+
+`$$\frac{dN}{dt} = \underbrace{r N \left(1 - \frac{N}{K} \right)}_{f(N)} - H$$`
+`$$H_{\text{MSY}} = f(N) = r K / 4, \phantom S B_{\text{MSY}} = K/2$$`
+
+---
+class: center, bottom
+
+# Stochastic Models: Reed 1979
+
+
+![](img/Reed.png)
+
+---
+
+## Constant Escapement vs MSY
+
+
+![](index_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+---
+class: center, middle
+
+## Sequential Decision problems: Dynamic Programming 
+
+![](img/dp.png)
+
+
+---
+background-image: url(img/noaa_school.jpg)
+background-position: center
+background-size: 120%
+class: center, middle, inverse
+
+# Reed's legacy
+
+-- 
+
+## We can ignore troublesome dynamic programming ...
+
+## ...and just stick with `\(S = B_{MSY}\)` value from a model's deterministic skeleton
+
+---
+
+background-image: url(img/noaa_tuna.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+## A long-standing paradox
+
+&gt; An important tacit assumption in Reed’s analysis, as in the other works referred
+to above, is that the recruitment level X is known accurately prior to the harvest decision, [...] In the case of fishery resources, the stock level X is almost never known very accurately, owing to the difficulty of observing fish in their natural environment.
+
+-- Clark &amp; Kirkwood 1987
+
+
+---
+
+background-image: url(img/noaa_tuna.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+![](img/Clark_alpha_invert.png)
+
+&gt; The above results appear to contradict the conventional wisdom of renewable resource management, under which high uncertainty would call for increased
+caution in the setting of quotas.
+
+-- Clark &amp; Kirkwood 1986
+
+
+
+
+
+---
+
+
+background-image: url(img/noaa_reef.jpg)
+background-position: bottom left
+background-size: 150%
+class: center, bottom, inverse
+
+
+![](img/Sethi_alpha_invert.png)
+
+&gt; It may seem counter-intuitive that a measurement error causes lower expected escapements
+below the deterministic fishery closure threshold. 
+
+-- Sethi et al (2005)
+
+---
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, middle, inverse
+
+# The uncertainty paradox:
+
+
+## _More_   uncertainty `\(\phantom = = \phantom =\)` _Less_   precautionary?
+
+
+---
+
+
+# Pretty Good Yield (PGY)
+
+![](img/pgy.png)
+
+
+---
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+## Measurement uncertainty -&gt; Non-Markovian
+
+Previous work simply assumes the Markov property: prior history doesn't matter
+
+
+---
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+## A Tough Problem
+
+&gt; For reasons of tractability, we shall adopt the simplifying assumption that the escapement level S, is known exactly at the end of that period. (The mathematical difficulty
+of the problem increases markedly if this assumption is
+relaxed.)
+
+
+
+
+---
+
+background-image: url(img/self-driving-car.jpg)
+class: center, inverse
+
+# A Solution?
+
+.pull-left.left[
+.footnote[
+CC-BY - flickr:jurvetson
+]]
+
+---
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: left, top, inverse, bold
+
+# POMDPs: Tracking the Belief State
+
+We will need:
+
+## Transition Matrix
+
+--
+## Utility Matrix
+
+--
+## Discount factor
+
+--
+## Observation Matrix
+
+--
+## (initial) prior belief
+
+--
+
+R package: &lt;https://github.com/boettiger-lab/sarsop&gt;
+
+
+---
+
+background-image: url(img/jetstream-cpus.jpg)
+background-position: center
+background-size: 100%
+class: center, bottom, inverse
+
+# XSEDE Jetstream Cloud
+
+HPC for the rest of us
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+![](index_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+## Deterministic Solution
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+![](index_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+## Pretty Good Yield
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+![](index_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+## Common sense prevails!
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+![](index_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+## (Prior) beliefs matter
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+![](index_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+## (Prior) beliefs matter
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+![](index_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+## (Prior) beliefs matter
+
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+
+![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+---
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+![](index_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+## Paradoxical earlier results effectively ignored prior information
+
+---
+
+
+background-image: url(img/noaa_fisheries.jpg)
+background-position: center
+background-size: 180%
+class: center, bottom, inverse
+
+![](index_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+## "Pretty Good Yield" isn't always more conservative
+
+
+---
+
+background-image: url(img/noaa_mpas.jpg)
+background-position: left
+background-size: 180%
+class: center, middle, inverse
+
+# So how do these policies actually play out?
+
+
+---
+background-image: url(img/noaa_mpas.jpg)
+background-position: center
+background-size: 180%
+class: center, middle, inverse
+
+![](index_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+# Maximum Sustainable Yield
+
+
+
+---
+background-image: url(img/noaa_mpas.jpg)
+background-position: center
+background-size: 180%
+class: center, middle, inverse
+
+![](index_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+# Reed's MDP
+
+
+---
+background-image: url(img/noaa_mpas.jpg)
+background-position: center
+background-size: 180%
+class: center, middle, inverse
+
+![](index_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+# Pretty Good Yield
+
+---
+background-image: url(img/noaa_mpas.jpg)
+background-position: center
+background-size: 180%
+class: center, middle, inverse
+
+![](index_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+
+# POMDP
+
+
+
+---
+class: inverse
+
+# Conclusions
+
+
+--
+- Predictions are not enough: Decisions need their own theory
+
+--
+- Precaution cannot be tacked on
+
+--
+- Beliefs / prior experience matters
+
+--
+- Much to learn from other fields
+
+---
+
+# Acknowledgements 
+
+.pull-left[
+![Milad Memarzadeh](img/milad.png)
+
+Milad Memarzadeh
+
+![UC Berkeley; ESPM Dept](img/berkeley.png)
+
+ESPM Dept (startup)
+]
+
+.pull-right[
+![Image credits: NOAA](img/noaa.png)
+
+Image credits
+
+
+![Jetstream](img/jetstream.png)
+
+Cloud Computing
+
+]
+
+---
+
+# Appendix: Age structure
+
+--
+
+- Larval only density dependence -&gt; MSY solution, harvest only on most valuable age class (Reed 1980, Getz 1980)
+
+--
+
+- Age+stage structured may not be an MSY (cyclical escapement, still an average `\(B_{\text{MSY}}\)`)
+
+--
+
+- Stochastic age-structured models: also support either larger or smaller harvest than the deterministic equivalent, but still at a constant escapement policy
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
