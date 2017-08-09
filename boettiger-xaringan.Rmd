@@ -17,7 +17,8 @@ output:
 ```{r setup, include=FALSE, message=FALSE}
 options(htmltools.dir.version = FALSE)
 knitr::opts_chunk$set(dev.args=list(bg="transparent"), 
-                      echo = FALSE, message=FALSE, warning=FALSE)
+                      echo = FALSE, message=FALSE, warning=FALSE,
+                      fig.width=11, fig.height=6.5)
 
 library(tidyverse)
 
@@ -130,20 +131,8 @@ class: center, bottom, inverse
 > An important tacit assumption in Reed’s analysis, as in the other works referred
 to above, is that the recruitment level X is known accurately prior to the harvest decision, [...] In the case of fishery resources, the stock level X is almost never known very accurately, owing to the difficulty of observing fish in their natural environment.
 
----
-
-background-image: url(img/noaa_tuna_net.jpg)
-background-position: center
-background-size: 120%
-class: center, bottom, inverse
-
-## A Tough Problem
-
-> For reasons of tractability, we shall adopt the simplifying assumption that the escapement level S, is known exactly at the end of that period. (The mathematical difficulty
-of the problem increases markedly if this assumption is
-relaxed.)
-
 -- Clark & Kirkwood 1987
+
 
 ---
 
@@ -189,6 +178,34 @@ class: center, middle
 ## _More_   uncertainty $\phantom = = \phantom =$ _Less_   precautionary?
 
 
+
+---
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+## A Tough Problem
+
+> For reasons of tractability, we shall adopt the simplifying assumption that the escapement level S, is known exactly at the end of that period. (The mathematical difficulty
+of the problem increases markedly if this assumption is
+relaxed.)
+
+
+---
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+## Measurement uncertainty -> Non-Markovian
+
+Previous work simply assumes the Markov property: prior history doesn't matter
+
+
+
 ---
 
 background-image: url(img/self-driving-car.jpg)
@@ -203,21 +220,28 @@ CC-BY - flickr:jurvetson
 
 ---
 
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: left, top, inverse, bold
+
 # POMDPs: Tracking the Belief State
 
-- Transition Matrix
+We will need:
+
+## Transition Matrix
 
 --
-- Observation Matrix
+## Utility Matrix
 
 --
-- Utility Matrix
+## Discount factor
 
 --
-- discount factor
+## Observation Matrix
 
 --
-- *prior belief*
+## (initial) prior belief
 
 --
 
@@ -287,7 +311,7 @@ class: center, bottom, inverse
 
 ```{r fig.width=11, fig.height=6.5}
 df %>%
-  filter(method %in% c("det", "medium")) %>%
+  filter(method %in% c("det", "low")) %>%
   plot_policies()
 ```
 
@@ -400,20 +424,85 @@ df %>%
 
 ---
 
-# Simulation
+background-image: url(img/noaa_mpas.jpg)
+background-position: left
+background-size: 180%
+class: center, middle, inverse
+
+# So how do these policies actually play out?
+
+
+---
+background-image: url(img/noaa_mpas.jpg)
+background-position: center
+background-size: 180%
+class: center, middle, inverse
+
+```{r}
+static_sims <- read_csv("static_sims.csv")
+
+static_sims %>% filter(method == "msy") %>%
+  ggplot(aes(time, stock, lty = variable)) + 
+  geom_line( lwd=2, col="white") 
+```
+
+# Maximum Sustainable Yield
+
+
+
+---
+background-image: url(img/noaa_mpas.jpg)
+background-position: center
+background-size: 180%
+class: center, middle, inverse
+
+```{r}
+static_sims %>% filter(method == "msy") %>%
+  ggplot(aes(time, stock, lty = variable)) + 
+  geom_line( lwd=2, col="white") 
+```
+
+# Reed's MDP
+
+
+---
+background-image: url(img/noaa_mpas.jpg)
+background-position: center
+background-size: 180%
+class: center, middle, inverse
+
+```{r}
+static_sims %>% filter(method == "pgy") %>%
+  ggplot(aes(time, stock, lty = variable)) + 
+  geom_line( lwd=2, col="white") 
+```
+
+# Pretty Good Yield
+
+---
+background-image: url(img/noaa_mpas.jpg)
+background-position: center
+background-size: 180%
+class: center, middle, inverse
+
+```{r}
+read_csv("pomdp_sim.csv")  %>%
+  ggplot(aes(time, stock, lty = variable)) + 
+  geom_line( lwd=2, col="white") 
+```
+
+# POMDP
+
 
 
 ---
 
-# There is no fixed "policy"
+# Conclusions
 
 --
-
-Must also know your prior belief
-
---
-
-in other words, must know prior _complete history_ of observations 
+- Decisions need theory too
+- Prior history matters
+- Heuristic precaution is insufficient
 
 ---
 
@@ -449,7 +538,7 @@ Cloud Computing
 
 - Larval only density dependence -> MSY solution, harvest only on most valuable age class (Reed 1980, Getz 1980)
 
--- 
+--
 
 - Age+stage structured may not be an MSY (cyclical escapement, still an average $B_{\text{MSY}}$)
 

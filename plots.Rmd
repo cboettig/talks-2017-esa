@@ -14,11 +14,13 @@ theme_set(theme_tufte())
 
 
 ```{r}
-states <- seq(0,2, length=60)
+id <- "plots_morenoise" # give an id to this set of conditions
+
+states <- seq(0,2, length=100)
 actions <- states
 observations <- states
-sigma_g <- 0.1
-sigma_m <- 0.2
+sigma_g <- 0.2
+sigma_m <- 0.3
 reward_fn <- function(x,h) pmin(x,h) # - .001*h
 discount <- 0.95
 
@@ -56,15 +58,12 @@ Note that reducing the deterministic harvest by a fixed fraction does not create
 
 
 ```{r}
-pgy_action <- sapply(det_policy, 
-                     function(x) which.min(abs(actions - 0.8 * x)))
-
 MSY <- f(S_star,0) - S_star
 msy_index <- which.min(abs(actions - MSY))
 msy_action <- rep(msy_index, length(actions))
 
 PGY <- 0.8 * MSY
-pgy_index <- which.min(abs(actions - 0.8 * PGY))
+pgy_index <- which.min(abs(actions - PGY))
 pgy_action <- rep(pgy_index, length(actions))
 ```
 
@@ -80,7 +79,7 @@ m <- fisheries_matrices(states, actions, observations, reward_fn,
 ## POMDP Solution
 
 ```{r eval=FALSE}
-#log_data <- data.frame(id = "plots", model = "ricker", 
+#log_data <- data.frame(id = id, model = "ricker", 
 #                       r = r, K = K, sigma_g = sigma_g, sigma_m = sigma_m)
 
 #system.time({
@@ -93,7 +92,7 @@ m <- fisheries_matrices(states, actions, observations, reward_fn,
 
 ```{r}
 log_dir <- "."
-meta <- meta_from_log(data.frame(id = "plots"), log_dir)
+meta <- meta_from_log(data.frame(id = id), log_dir)
 alpha <- alphas_from_log(meta, log_dir)[[1]] ## bc fn returns a list with all matching alphas, we need [[1]]
 ```
 
@@ -167,7 +166,7 @@ plot_policies <- function(df){
 }
 
 df %>% 
-  filter(method %in% c("det", "pgy")) %>%
+  filter(method %in% c("det", "pgy", "uniform")) %>%
   plot_policies()
 ```
 
@@ -175,7 +174,7 @@ df %>%
 ```{r message=FALSE, warning=FALSE}
   df %>% 
     filter(method %in% c("low", "medium", "high", "det")) %>% 
-    mutate(prior = prior*3) %>%
+    mutate(prior = prior*6) %>%
     select(states, escapement, method, prior) %>%
     gather(panel, variable, -states, -method) %>%
     ggplot() + 
@@ -187,33 +186,6 @@ df %>%
 ```
 
 
-
-```{r}
-df %>% 
-  filter(method %in% c("det", "medium", "uniform")) %>%
-  plot_policies()
-
-```
-
-
-
-
-
-```{r}
-## make det line faint
-df %>% 
-  filter(method %in% c("det")) %>%
-  ggplot(aes(x = states, y = escapement, lty = method)) + 
-  geom_line(lwd=1, alpha = 0.25) +
-  coord_cartesian(xlim = c(0,1), ylim=c(0,0.8)) +
-  ylab("Escapement, B_{MSY}") + 
-  xlab("Observed stock") -> det_plot
-
-det_plot + 
-  geom_line(alpha=1, lwd = 1, data =
-  filter(df, method %in% c("low", "pgy")) )
-  
-```
 
 ```{r}
 df %>%
@@ -240,48 +212,96 @@ df %>%
 
 
 
-
 Simulate management under the POMDP policy:
 
 ```{r}
 x0 <- which.min(abs(states - K))
 Tmax <- 200
+```
+
+```{r}
+pomdp_sims <- sim_pomdp(m$transition, m$observation, m$reward, discount, 
+unif_prior, x0 = x0, Tmax = Tmax, alpha = alpha,reps=20)
+```
+
+Plot simulation data:
+
+```{r}
+pomdp_sims$df %>% 
+  mutate(state = states[state], action = actions[action]) %>%
+  select(-value, -obs, -rep) %>%
+  group_by(time) %>% summarise_all(mean) %>%
+  gather(variable, stock, -time) -> 
+  pomdp_sim
+  
+write_csv(pomdp_sim, "pomdp_sim.csv")
+  
+  pomdp_sim %>%
+  ggplot(aes(time, stock, color = variable)) + geom_line() 
+```
+
+
+
+Simulate management under an MSY policy:
+
+```{r}
+plot_policy_sim <- function(policy, reps = 50){
 sim <- sim_pomdp(m$transition, m$observation, m$reward, discount, 
-state_prior, x0 = x0, Tmax = Tmax, alpha = alpha)
-```
+                 x0 = x0, Tmax = Tmax, policy = policy, reps = reps)
+sim$df %>% 
+  mutate(state = states[state], action = actions[action]) %>%
+  select(-value, -obs, -rep) %>%
+  group_by(time) %>% summarise_all(mean) %>%
+  gather(variable, stock, -time) 
+}
 
-Plot simulation data:
+static_sims <-
+list(msy = msy_action, det = det_action, pgy = pgy_action) %>% 
+  map_df(plot_policy_sim, .id = "method")
+
+write_csv(static_sims, "static_sims.csv")
+```
 
 ```{r}
-sim$df %>%
-select(-value) %>%
-mutate(state = states[state], action = actions[action], obs = observations[obs]) %>%
-gather(variable, stock, -time) %>%
-ggplot(aes(time, stock, color = variable)) + geom_line()  + geom_point()
+static_sims %>%
+  ggplot(aes(time, stock, lty = variable), lwd=2) + 
+  geom_line() + facet_wrap(~method, ncol=1)
 ```
 
 
 
-
-Simulate management under an MDP policy:
+Simulate management under an deterministic MDP policy:
 
 ```{r}
-library(mdplearning)
-x0 <- which.min(abs(states - K))
-Tmax <- 200
-sim <- mdp(m$transition, m$observation, m$reward, discount, 
-state_prior, x0 = x0, Tmax = Tmax, alpha = alpha)
+plot_policy_sim(det_action)
 ```
 
-Plot simulation data:
+Simulate management under an PGY policy:
 
 ```{r}
-sim$df %>%
-select(-value) %>%
-mutate(state = states[state], action = actions[action], obs = observations[obs]) %>%
-gather(variable, stock, -time) %>%
-ggplot(aes(time, stock, color = variable)) + geom_line()  + geom_point()
+plot_policy_sim(pgy_action)
 ```
+
+
+
+
+
+Simulate management under an deterministic precautionary MDP policy:
+
+```{r}
+plot_policy_sim(pmax(1,det_action-2))
+```
+
+
+
+
+
+
+
+
+
+
+
 
 Plot belief evolution:
 
