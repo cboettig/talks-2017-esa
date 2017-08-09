@@ -21,6 +21,7 @@ knitr::opts_chunk$set(dev.args=list(bg="transparent"),
                       fig.width=11, fig.height=6.5)
 
 library(tidyverse)
+library(ggthemes)
 
 theme_set(
  theme_bw(base_size=26) + 
@@ -46,22 +47,101 @@ background-position: center
 background-size: 180%
 class: center, bottom, inverse
 
+> Managing fisheries is hard: it’s like managing a forest, in which the trees are invisible and keep moving around
+
+--John Shepard, from unpublished lecture at Princeton University, ca 1978
+
+<!--
+
 > The real goal of fisheries management is to avoid finding out what the stock-recruitment relationship is. Once you have depleted the stock enough to know, it’s probably too late
 
 --John Shepard, from an argument with David Cushing, ca 1980
 
----
-
-# How do we manage what we cannot measure?
-
+-->
 
 ---
 
-# We include uncertainties in our *models* but not *decisions*
+background-image: url(img/noaa_sunset.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# We've gotten much better at including uncertainties in our models
 
 ---
 
-# Stock assessment & uncertainty
+background-image: url(img/noaa_sunset.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# It is time to include uncertainties in our decisions
+
+---
+
+background-image: url(img/noaa_sunset.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# Decision Theory
+
+--
+
+### Fischer et al (2009): _Integrating resilience thinking and optimisation for conservation._
+
+### Polasky et al (2011): _Decision-making under great uncertainty: environmental management in an era of global change._
+
+
+---
+background-image: url(img/bw.png)
+background-position: center
+background-size: 100%
+class: center
+
+.pull-left[
+
+# Optimal Control 
+
+]
+
+.pull-right[
+# <span style="color: white">Resilience Thinking</span>
+]
+
+---
+background-image: url(img/noaa_school.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+# Uncertainty about the Furture 
+
+<!--
+### Ecological Forecasting-->
+
+---
+background-image: url(img/noaa_school.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+
+# Uncertainty about the Present
+
+<!--
+## Unknown Unknowns?
+## Unknown Knowns
+-->
+
+---
+
+background-image: url(img/noaa_trawler.jpg)
+background-position: center
+background-size: 100%
+class: center, bottom, inverse
+
+# Stock assessment uncertainty
 
 
 ---
@@ -95,29 +175,54 @@ $$\frac{dN}{dt} = \underbrace{r N \left(1 - \frac{N}{K} \right)}_{f(N)} - H$$
 $$H_{\text{MSY}} = f(N) = r K / 4, \phantom S B_{\text{MSY}} = K/2$$
 
 ---
+class: center, bottom
 
-# Stochastic Models (Reed 1979)
-
-$$ N_{t+1} = z_t^g f(N_t - H_t)$$
+# Stochastic Models: Reed 1979
 
 
-"Constant Escapement"
-
-$$S = B_{\text{MSY}}$$
----
-
-# Solving Sequential Decision problems: Dynamic Programming 
+![](img/Reed.png)
 
 ---
 
-# Reed's legacy: a most important result you can safely ignore
+## Constant Escapement vs MSY
 
+
+```{r fig.width=11, fig.height=6.5}
+plot_policies <- function(df){
+  ggplot(df, aes(x = states, y = escapement, lty = method)) + 
+    geom_line(lwd = 2) +
+    coord_cartesian(xlim = c(0,1), ylim = c(0,0.8)) +
+    ylab(bquote(paste("Escapement, ", B[MSY]))) + 
+    xlab("Observed stock") + theme_tufte(26)
+}
+read_csv("policies.csv") -> df 
+
+df %>%
+  filter(method %in% c("det")) %>%
+  plot_policies()
+```
+
+---
+class: center, middle
+
+## Sequential Decision problems: Dynamic Programming 
+
+![](img/dp.png)
 
 
 ---
+background-image: url(img/noaa_school.jpg)
+background-position: center
+background-size: 120%
+class: center, middle, inverse
 
-# Decisions vs Models
+# Reed's legacy
 
+-- 
+
+## We can ignore troublesome dynamic programming ...
+
+## ...and just stick with $S = B_{MSY}$ value from a model's deterministic skeleton
 
 ---
 
@@ -170,13 +275,35 @@ below the deterministic fishery closure threshold.
 
 ---
 
-class: center, middle
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, middle, inverse
 
 # The uncertainty paradox:
 
 
 ## _More_   uncertainty $\phantom = = \phantom =$ _Less_   precautionary?
 
+
+---
+
+
+# Pretty Good Yield (PGY)
+
+![](img/pgy.png)
+
+
+---
+
+background-image: url(img/noaa_tuna_net.jpg)
+background-position: center
+background-size: 120%
+class: center, bottom, inverse
+
+## Measurement uncertainty -> Non-Markovian
+
+Previous work simply assumes the Markov property: prior history doesn't matter
 
 
 ---
@@ -192,17 +319,6 @@ class: center, bottom, inverse
 of the problem increases markedly if this assumption is
 relaxed.)
 
-
----
-
-background-image: url(img/noaa_tuna_net.jpg)
-background-position: center
-background-size: 120%
-class: center, bottom, inverse
-
-## Measurement uncertainty -> Non-Markovian
-
-Previous work simply assumes the Markov property: prior history doesn't matter
 
 
 
@@ -496,13 +612,22 @@ read_csv("pomdp_sim.csv")  %>%
 
 
 ---
+class: inverse
 
 # Conclusions
 
+
 --
-- Decisions need theory too
-- Prior history matters
-- Heuristic precaution is insufficient
+- Predictions are not enough: Decisions need their own theory
+
+--
+- Precaution cannot be tacked on
+
+--
+- Beliefs / prior experience matters
+
+--
+- Much to learn from other fields
 
 ---
 
